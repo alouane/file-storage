@@ -103,7 +103,18 @@ module.exports = function(router, filestore, logger, debug) {
         })
         .catch(next);
     });
-
+    
+    // OPTIONS file status => Respond to preflight request when consumed by SPA
+    router.options('/files/:id', (req, res, next) => {
+        //Tell client that this pre-flight info is valid for 20 days 
+        res.setHeader('access-control-max-age', 1728000);
+        res.setHeader('content-type', 'application/json');
+        res.setHeader('content-length', 0);
+        res.statusCode = 200;
+        
+        res.end('OK');
+    });
+    
     // Put file
     router.post('/files/:id', (req, res, next) => {
         const id = req.params.id;
